@@ -1,9 +1,10 @@
-const domain = "http://127.0.0.1:5500";
+// const domain = "http://127.0.0.1:5500";
+const domain = "http://iphr.octphysicsclub.org/IPhR-2024";
 // const domain = "https://ambassador.octphysicsclub.org";
 const examDuration = 45 * 60 * 1000;
 const examOpenInterval = [
-  new Date("2024-08-01T00:03:00+03:00"),
-  new Date("2024-08-02T19:50:00+03:00"),
+  new Date("2024-08-02T17:00:00+03:00"),
+  new Date("2024-08-02T17:20:00+03:00"),
 ];
 function giveAlert(alert, color, from, clicky, callBackFunction, yesNo) {
   return new Promise((resolve, reject) => {
