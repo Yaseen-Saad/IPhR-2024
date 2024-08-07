@@ -1,10 +1,9 @@
-// const domain = "http://127.0.0.1:5500";
-const domain = "http://iphr.octphysicsclub.org/IPhR-2024";
-// const domain = "https://ambassador.octphysicsclub.org";
-const examDuration = 45 * 60 * 1000;
+// const domain = "http://127.0.0.1:5501";
+const domain = "https://iphr.octphysicsclub.org/competition-2024";
+const examDuration = 40 * 60 * 1000;
 const examOpenInterval = [
-  new Date("2024-08-02T17:00:00+03:00"),
-  new Date("2024-08-02T17:20:00+03:00"),
+  new Date("2024-08-08T14:00:00Z"),
+  new Date("2024-08-08T14:30:00Z"),
 ];
 function giveAlert(alert, color, from, clicky, callBackFunction, yesNo) {
   return new Promise((resolve, reject) => {
@@ -64,3 +63,77 @@ function giveAlert(alert, color, from, clicky, callBackFunction, yesNo) {
     document.body.append(body, overlay);
   });
 }
+(function () {
+  "use strict";
+  // Overwriting console methods to display a security message
+  Object.getOwnPropertyNames(console)
+    .filter(function (property) {
+      return typeof console[property] === "function";
+    })
+    .forEach(function (verb) {
+      console[verb] = function () {
+        return "Sorry, for security reasons, this action is not allowed.";
+      };
+    });
+
+  // Detecting if DevTools is open
+  const detectDevTools = () => {
+    let devtoolsOpen = false;
+    const threshold = 160;
+    const start = performance.now();
+    debugger;
+    const end = performance.now();
+    if (end - start > threshold) {
+      devtoolsOpen = true;
+    }
+
+    if (devtoolsOpen) {
+      alert(
+        "Don't Open DevTools, Opening it will lead to automatic disqualification"
+      );
+      if (localStorage.getItem("devtools")) {
+        localStorage.setItem("devtools", localStorage.getItem("devtools") + 1);
+      } else {
+        localStorage.setItem("devtools", 1);
+      }
+      window.location.href = "#";
+      document.head.innerHTML = "";
+      document.body.innerHTML = "DevTools is open, the page is now cleared.";
+    }
+  };
+
+  // Run the detection periodically
+  setInterval(detectDevTools, 1000);
+
+  // Preventing new Function creation
+  const originalFunction = window.Function;
+  window.Function = function () {
+    throw new Error("Sorry, creating new functions is not allowed.");
+  };
+
+  // Preventing script execution through eval
+  window.eval = function () {
+    throw new Error("Sorry, eval is not allowed.");
+  };
+
+  // Preventing script execution through setTimeout and setInterval
+  const originalSetTimeout = window.setTimeout;
+  window.setTimeout = function (callback, delay) {
+    if (typeof callback === "string") {
+      throw new Error(
+        "Sorry, using string as code in setTimeout is not allowed."
+      );
+    }
+    return originalSetTimeout(callback, delay);
+  };
+
+  const originalSetInterval = window.setInterval;
+  window.setInterval = function (callback, delay) {
+    if (typeof callback === "string") {
+      throw new Error(
+        "Sorry, using string as code in setInterval is not allowed."
+      );
+    }
+    return originalSetInterval(callback, delay);
+  };
+})();

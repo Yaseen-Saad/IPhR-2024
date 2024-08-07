@@ -22,11 +22,19 @@ body {
     background-color: #121116;
     position: relative;
 
-    section#Competition>span#timer {
-        width: 100%;
-        font-size: 10vw;
-        text-align: center;
-        display: inline-block;
+    section#Competition {
+        li {
+            font-size: 1.2rem;
+            line-height: 2em;
+            margin-left: 5%;
+        }
+
+        >span#timer {
+            width: 100%;
+            font-size: 10vw;
+            text-align: center;
+            display: inline-block;
+        }
     }
 
     #timer {

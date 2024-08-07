@@ -9,7 +9,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" type="image/x-icon" href="./Logo Mini.png" />
     <title>IPhR Competition | STEM October Physics Club</title>
-    <link rel="stylesheet" href="./portal_style.css">
+    <link rel="stylesheet" href="./portal_style.min.css">
 </head>
 
 <body>
@@ -23,17 +23,17 @@
     </nav>
     <main>
         <div class="wrap">
-            <form id="applicationForm" action="/submit" method="get">
+            <form id="applicationForm">
                 <h1><a href="https://www.octphysicsclub.org" target="_blank"><img class="logo" src="./Logo.png"
                             alt=""></a>IPhR Competition</h1>
                 <hr />
                 <article>
                     <h2> Email Address</h2>
-                    <input type="text" placeholder="Enter Your Email Address" name="Email" id="email">
+                    <input type="text" placeholder="Email Address" name="Email" id="email">
                 </article>
                 <article>
                     <h2>Birth Date</h2>
-                    <input type="password" placeholder="Enter Your Birth Date" name="password" id="password">
+                    <input type="password" placeholder="Birth Date (mm/dd/yyyy)" name="password" id="password">
                 </article>
 
                 <article>
@@ -42,13 +42,12 @@
             </form>
         </div>
     </main>
-    <!-- Add Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
-    <script src="./globals.js"></script>
-    <script src="./mainsign_in_up.js"></script>
-    <script deter src="./index.js"></script>
+    <script src="./globals-obfuscated.js?v=2.0"></script>
+    <script src="./mainsign_in_up-obfuscated.js?v=1.0"></script>
+    <script deter src="./index-obfuscated.js?v=1.0"></script>
 </body>
 
 </html>

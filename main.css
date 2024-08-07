@@ -24,6 +24,11 @@ body {
   background-color: #121116;
   position: relative;
 }
+body section#Competition li {
+  font-size: 1.2rem;
+  line-height: 2em;
+  margin-left: 5%;
+}
 body section#Competition > span#timer {
   width: 100%;
   font-size: 10vw;
@@ -427,4 +432,4 @@ body main section:not(#Competition) .closing-section {
     stroke-dashoffset: -669.92;
     visibility: visible;
   }
-}/*# sourceMappingURL=main.css.map */
+}/*# sourceMappingURL=main.min.css.map */

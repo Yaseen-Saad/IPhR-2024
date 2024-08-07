@@ -18,15 +18,12 @@ async function CheckUserCredits() {
             location.href = domain;
             reject("Redirecting due to missing token");
           } else {
-            console.log("signed in");
             function checkCameraAccess() {
               navigator.permissions
                 .query({ name: "camera" })
                 .then((permissionStatus) => {
                   if (permissionStatus.state === "granted") {
-                    console.log("Camera access already granted");
                   } else if (permissionStatus.state === "prompt") {
-                    console.log("Camera prmpt");
                   } else if (permissionStatus.state === "denied") {
                     alert("Please Allow Camera Access");
                     location.reload();
@@ -57,7 +54,6 @@ async function CheckUserCredits() {
     });
   });
 
-  console.log("user", useremail);
   return useremail;
 }
 
@@ -90,36 +86,56 @@ if (
         .doc(useremail);
       const request = await dataFirestore.get();
       const data = request.data();
-      localStorage.setItem("timeOpened", data.timeOpened);
+      console.log(data);
+
+      if (data?.timeOpened) {
+        localStorage.setItem("timeOpened", data.timeOpened);
+      } else {
+        localStorage.setItem("timeOpened", Date.now());
+      }
       if (!data?.registeredTime) {
         if (localStorage.getItem("timeOpened")) {
-          console.log(
-            +localStorage.getItem("timeOpened") + examDuration > Date.now()
-          );
           if (+localStorage.getItem("timeOpened") + examDuration > Date.now()) {
             let personHistory = [];
             const video = document.getElementById("video");
             const detectionInterval = 300; // ms
             const checkDuration = 4000; // ms
             const historyLength = checkDuration / detectionInterval;
-            const confidenceThreshold = 0.6; // Adjust this threshold as needed
+            const confidenceThreshold = 0.65; // Adjust this threshold as needed
             const capDelay = 3 * 60 * 1000;
-            const switchDBDelay = 5 * 60 * 1000;
+            const switchDBDelay = 3.4 * 60 * 1000;
             const storage1 = firebase.storage(appMain);
             const storage2 = firebase.storage(appSecondary);
             const storage3 = firebase.storage(app3);
             const storage4 = firebase.storage(app4);
+            const storage5 = firebase.storage(app5);
+            const storage6 = firebase.storage(app6);
+            const storage7 = firebase.storage(app7);
+            const storage8 = firebase.storage(app8);
+            const storage9 = firebase.storage(app9);
+            const storage10 = firebase.storage(app10);
             let currentStorage = storage1;
+
             const timerInterval = setInterval(() => {
               updateTimer();
             }, 1000);
             window.onbeforeunload = function () {
               return "No data will be submitted if you left the page.";
             };
-            const storages = [storage1, storage2, storage3, storage4];
+            const storages = [
+              storage1,
+              storage2,
+              storage3,
+              storage4,
+              storage5,
+              storage6,
+              storage7,
+              storage8,
+              storage9,
+              storage10,
+            ];
             function switchStorage() {
-              console.log(currentStorage);
-              if (currentStorage != storage4) {
+              if (currentStorage != storage10) {
                 currentStorage = storages[storages.indexOf(currentStorage) + 1];
               } else {
                 currentStorage = storages[0];
@@ -155,11 +171,17 @@ if (
               const mainDataObject = {};
               document.querySelector(".loader").style.display = "grid";
               [
-                ...document.querySelectorAll("form article input[type=text]"),
+                ...document.querySelectorAll(
+                  "#registration-form article input[type=text]"
+                ),
               ].map(function (field) {
                 mainDataObject[field.getAttribute("name")] = field.value;
               });
-              [...document.querySelectorAll("form input[type=radio]")]
+              [
+                ...document.querySelectorAll(
+                  "#registration-form input[type=radio]"
+                ),
+              ]
                 .filter(function (field) {
                   return field.checked === true;
                 })
@@ -168,6 +190,7 @@ if (
                     `${answer.name}`
                   )[1];
                 });
+
               mainDataObject.SwitchedTabsCount = JSON.parse(
                 localStorage.getItem("SwitchedTabsCount")
               );
@@ -180,6 +203,7 @@ if (
               mainDataObject.moreThanOneCount = JSON.parse(
                 localStorage.getItem("moreThanOneCount")
               );
+              mainDataObject.DevToolsOpened = localStorage.getItem("devtools");
               window.onbeforeunload = null;
               async function addDocument(answers) {
                 try {
@@ -299,7 +323,6 @@ if (
                 (notAloneReadings / totalReadings) * 100;
               const notPresentPercentage =
                 (notPresentReadings / totalReadings) * 100;
-              console.log(personHistory);
               // Check the conditions
               if (totalReadings >= 10) {
                 if (notAlonePercentage > 50) {
@@ -323,82 +346,258 @@ if (
               };
               detectLoop();
               const form = document.querySelector("#registration-form");
-              let questions;
-              console.log(data.category);
-
+              let questions = [
+                {
+                  statement: `A planet orbiting a star has a period of 4 days and the length of the semi-major axis between them is 8000Km. If the period suddenly increased to 8 days, what is the new semi-major axis length in km?`,
+                },
+                {
+                  statement: `Two identical blocks of the same mass are released simultaneously: one is thrown horizontally from the top of a mountain, and the other is dropped vertically. Which object is traveling faster when it hits the ground below?`,
+                  choices: [
+                    `The first block`,
+                    `The second block`,
+                    `They have the same speed when hitting the ground`,
+                    `It is impossible to determine from the given information`,
+                  ],
+                },
+                {
+                  statement: `Vector A = (2.0i + 2.0j) and B = (2.0i - 4.0j). What is the angle, in degrees, that the vector sum of the two vectors makes with the origin?`,
+                },
+                {
+                  statement: `In one-dimensional motion, what properties does the average speed of an object exhibit if it travels from one location to another and then returns to its original position?`,
+                  choices: [
+                    `It is positive`,
+                    `It is negative`,
+                    `It is zero`,
+                    `It can be negative, positive, or zero`,
+                  ],
+                },
+                {
+                  statement: `A particle at \\(x_i = 3m\\) is moving with velocity \\(v_i = 10m/s\\) and is under uniform acceleration. If after some time t=2s the velocity of the particle becomes \\(v_f = -7m/s\\). What is the final position of the particle?`,
+                },
+                {
+                  statement: `Which of the following is equivalent to Joule (J):`,
+                  choices: [
+                    `\\(\\dfrac{Kg.m}{s^2}\\)`,
+                    `\\(\\dfrac{Kg.m^2}{s}\\)`,
+                    `\\(\\dfrac{Kg.m^2}{s^2}\\)`,
+                    `\\(\\dfrac{Kg^2.m^2}{s^2}\\)`,
+                  ],
+                },
+                {
+                  statement: `A small object of mass 300 g was released from a 7 m height, what's its velocity at a height of 0.5 m?`,
+                },
+                {
+                  statement: `Consider six variables a, b, c, d, etc, and f which are related by the equation \\(ab+c=\\frac{d}{e} - f\\). If the units of a, b, and e are Pa, J, and N respectively, what are the units of c,d, and f?`,
+                  choices: [
+                    `\\(\\frac{N(\\frac{N}{m^2}{m} \ | \ \\frac{N^3}{m} \ | \ \\frac{N^2}{m}\\)`,
+                    `\\} \ | \ \\frac{N^2}{m} \ | \ \\frac{N}{m}\\)`,
+                    `\\(\\frac{N^2}{m^2} \ | \ \\frac{N^3}{m^2} \ | \ \\frac{N^2}{m^2}\\)`,
+                    `\\(\\frac{N}{m^2} \ | \ \\frac{N^2}{m^2} \ | \ \\frac{N}{m^2}\\)`,
+                  ],
+                },
+                {
+                  statement: `If a rotating object with an angular velocity \\((\\omega = 40rad/s)\\) produces 50J of energy every second, what is the applied torque on this object?`,
+                },
+                {
+                  statement: `Which of the following is true about torque \\((\\tau)\\) ?`,
+                  choices: [
+                    `torque is a vector quantity whose direction is tangent to the trajectory of the rotation.`,
+                    `torque is a vector quantity whose direction is towards the axis of rotation.`,
+                    `torque is a vector quantity whose direction is perpendicular on the plane of the trajectory.`,
+                    `torque is a scalar quantity which has no direction.`,
+                  ],
+                },
+                {
+                  statement: `50 Newtons of force are needed to compress a spring with an initial length of 50 cm to a final length of 48 cm. What is the spring constant, k, of this spring?`,
+                  choices: [
+                    `\\(250 N/m\\)`,
+                    `\\(250 kg \\cdot s^2\\)`,
+                    `\\(2500 N \\cdot meter\\)`,
+                    `\\(2500 kg/s^2\\)`,
+                  ],
+                },
+                {
+                  statement: `What determines the speed of a wave travelling through a medium?`,
+                  choices: [
+                    `The wave's frequency`,
+                    `The wave's amplitude`,
+                    `The properties of the medium`,
+                    `The properties of the observer`,
+                  ],
+                },
+                {
+                  statement: `What is the restoring force and the energy of a spring? If the spring's position was at 2m, then it compressed to -3m. [k= 2.85N/m]`,
+                  choices: [
+                    `-14.25N, 35.63J`,
+                    `14.25N, 35.63J`,
+                    `-14.25N, 36.63J`,
+                    `14.25N, 36.63J`,
+                  ],
+                },
+                {
+                  statement: `What is the angular frequency of a simple pendulum? \n \n \\(l\\): the length of the pendulum \n g: the acceleration due to gravity \n m: mass of the pendulum \n k: the young's modulus of the string`,
+                  choices: [
+                    `\\(\\sqrt{\\dfrac{k}{m}}\\)`,
+                    `\\(\\dfrac{k}{m}\\)`,
+                    `\\(\\dfrac{g}{\\ell}\\)`,
+                    `\\(\\sqrt{\\dfrac{g}{\\ell}}\\)`,
+                  ],
+                },
+                {
+                  statement: `The power of a wave increased the most in which of the following`,
+                  choices: [
+                    `amplitude is doubled`,
+                    `velocity is doubled`,
+                    `angular frequency decreased to half`,
+                    `mass per unit length triples`,
+                  ],
+                },
+                {
+                  statement: `If a system is considered adiabatic and the work is done on the system then:`,
+                  choices: [
+                    `\\(\\Delta U=W\\)`,
+                    `\\(\\Delta U=-W\\)`,
+                    `\\(\\Delta U=Q\\)`,
+                    `\\(\\Delta U=-Q\\)`,
+                  ],
+                },
+                {
+                  statement: `Which of the following processes occurs with constant entropy?`,
+                  choices: [
+                    `Isentropic process`,
+                    `Isenthalpic process`,
+                    `All of the above`,
+                    `None of the above`,
+                  ],
+                },
+                {
+                  statement: `If a Carnot engine has a heat reservoir of \\(225^{\\circ} c\\) and \\(a\\) cold reservoir at a temperature of \\(40^{\\circ} c\\), Its operating efficiency to the nearest percent will be:`,
+                  choices: [`52 %`, `68 %`, `82 %`, `98 %`],
+                },
+                {
+                  statement: `The length of a sheet of aluminum is \\(L = 40m\\) at \\(10^{\\circ} c\\), so what is the increase of its length, \\(\\Delta L\\), at \\(50^{\\circ} C\\)? (Linear expansion coefficient (\\(\\alpha)\\) of aluminum \\(= 24 \\times{10^{-6}})\\)`,
+                  choices: [`6.84 cm`, `5.84 cm`, `4.84 cm`, `3.84 cm`],
+                },
+                {
+                  statement: `if three electric lines are coming out from \\(Q\\) and only two entering \\(q\\) then:`,
+                  choices: [
+                    `\\(Q\\) is -, \\(q\\) +, \\(2q=3Q\\)`,
+                    `\\(Q\\) is +, \\(q\\) -, \\(3q=2Q\\)`,
+                    `\\(Q\\) is -, \\(q\\) -, \\(3q=2Q\\)`,
+                    `\\(Q\\) is +, \\(q\\) +, \\(2q=3Q\\)`,
+                  ],
+                },
+                {
+                  statement: `A volt is:`,
+                  choices: [
+                    `the amount of work done to transfer a charge`,
+                    `the amount of work done to create a current`,
+                    `a vector quantity`,
+                    `a and b`,
+                  ],
+                },
+                {
+                  statement: `A charge of 10 coulombs is represented by 20 electric field lines. How many lines will represent a 5-coulomb charge?`,
+                  choices: [`20`, `10`, `5`, `2.5`],
+                },
+                {
+                  statement: `Which of the following statements describe the potential difference across a parallel combination of resistors correctly?`,
+                  choices: [
+                    `They all have the same potential difference.`,
+                    `The closest resistor to the battery has the largest potential difference.`,
+                    `The farthest resistor from the battery has the largest potential difference.`,
+                    `Depends on the resistance of each resistor.`,
+                  ],
+                },
+                {
+                  statement: `What is the acceleration of an electron moving through an electric field of \\(E = 1 \\times 10^5 N/C\\)?`,
+                  choices: [
+                    `\\(1.76 \\times 10^{16} m/s^2\\)`,
+                    `\\(1.67 \\times 10^{16} m/s^2\\)`,
+                    `\\(1.67 \\times 10^{6} m/s^2\\)`,
+                    `\\(1.76 \\times 10^{6} m/s^2\\)`,
+                  ],
+                },
+                {
+                  statement: `If a wire is 5 meters long and carries 5 mA with no internal resistance. Calculate the force exerted on that conductor when it is placed in a uniform magnetic field equals \\(6 \\times 10^{-3}\\) Tesla`,
+                  choices: [
+                    `\\(1.4 \\times 10^{-4}\\)`,
+                    `\\(1.4 \\times 10^{-6}\\)`,
+                    `\\(1.5 \\times 10^{-4}\\)`,
+                    `\\(1.5 \\times 10^{-6}\\)`,
+                  ],
+                },
+                {
+                  statement: `With the beginning of the alien invasion of Earth, an Unidentified flying Object, of cylindrical shape of height \\(3m\\) and its diameter is \\(10m\\), is flying horizontally in a vertical uniform electric field of magnitude \\(2 \\times 10^4\\). Determine the electric flux through the bottom of the strange aircraft.`,
+                  choices: [
+                    `\\( 1.885 \\times 10^7 \\)`,
+                    `\\( 1.571 \\times 10^6 \\)`,
+                    `\\(4.712 \\times 10^6\\)`,
+                    `\\( 6.283 \\times 10^6 \\)`,
+                  ],
+                },
+                {
+                  statement: `The resistance of a wire of 0.01 cm radius is 10 Ω. If the resistivity of the material of the wire is \\(50 \\times 10^{-8} \\Omega m\\), find the length of the wire.`,
+                  choices: [`0.628 cm`, `6.28 cm`, `0.628 m`, `62.8 m`],
+                },
+                {
+                  statement: `If a person is diagnosed with nearsightedness, he should wear a lens with an angular magnification factor, this is`,
+                  choices: [
+                    `equal to 1`,
+                    `slightly more than 1`,
+                    `less than 0`,
+                    `more than 0`,
+                  ],
+                },
+                {
+                  statement: `If the radius of the first curvature in a thin lens is -35 cm, the radius of the second curvature is 25 cm, and the refractive index (n) of the lens is 1.5, what is the focal length of this lens?`,
+                  choices: [`29 cm`, `28 cm`, `27 cm`, `26 cm`],
+                },
+                {
+                  statement: `After nearly 3 months of preparation, an IPhR organizer wanted to regain his fitness, so he decided to exercise by speeding from rest to 0.95c. Calculate the energy he used in this process if his mass is m kg.`,
+                  choices: [
+                    `\\(1.1mc^2\\)`,
+                    `\\(2.2mc^2\\)`,
+                    `\\(3mc^2\\)`,
+                    `\\(3.1mc^2\\)`,
+                  ],
+                },
+              ];
               if (data?.category === "regular") {
-                questions = [
-                  {
-                    statement: `The two functions \\(f(x) = x^2\\) and \\(g(x) = \\frac{1}{2}x^2+5\\) cross at two points. Let these two points be \\(a\\) and \\(b\\) such that \\(a < b\\). Find the area between the two curves on the interval \\([a,b]\\).`,
-                    choices: [
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{3}}+ 5}}{42}-1}{5}\\)`,
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{4}}+ 5}}{42}-1}{5}\\)`,
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{5}}+ 5}}{42}-1}{5}\\)`,
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{6}}+ 5}}{42}-1}{5}\\)`,
-                    ],
-                  },
-                  {
-                    statement: `Evalute: \\[\\int_{0}^{\\infty} \\frac{x^2 \\sin(x)}{e^x - 1}\\, dx\\]`,
-                  },
-                  {
-                    statement: `Evaluate:
-\\[ \\sum_{n=1}^{\\infty}\\frac{2^{n+1}}{8\\cdot4^n-6\\cdot 2^n + 1}\\]`,
-                    choices: [
-                      `\\(5n^{34}\\)`,
-                      `\\(\\dfrac{1}{3}\\)`,
-                      `\\[ \\sum_{n=1}^{\\infty}\\frac{2}{8n+ 1}\\]`,
-                      `\\(850n\\)`,
-                    ],
-                  },
-                  { statement: "Physics or Bio Club?" },
-                  {
-                    statement: ` \\[\\lim_{x\\to6}\\dfrac{\\text{(Helmy)}^3+\\dfrac{1}{3}\\cdot4^3}{e^4\\pi\\times\\rho}\\]@Mohab Mekawi`,
-                  },
-                ];
-              } else {
-                questions = [
-                  {
-                    statement: `The F functions \\(f(x) = x^2\\) and \\(g(x) = \\frac{1}{2}x^2+5\\) cross at two points. Let these two points be \\(a\\) and \\(b\\) such that \\(a < b\\). Find the area between the two curves on the interval \\([a,b]\\).`,
-                    choices: [
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{3}}+ 5}}{42}-1}{5}\\)`,
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{4}}+ 5}}{42}-1}{5}\\)`,
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{5}}+ 5}}{42}-1}{5}\\)`,
-                      `\\(\\dfrac{\\dfrac{\\sqrt{x^{\\dfrac{2}{6}}+ 5}}{42}-1}{5}\\)`,
-                    ],
-                  },
-                  {
-                    statement: `Evalute:
-    \\[\\left(\\lim_{x\\to0} \\dfrac{e^{7x}-1}{x}\\right)^8 + \\left(\\lim_{x\\to12}\\dfrac{x^2-25}{x+5}\\right)^7\\]`,
-                    choices: [
-                      `\\[\\lim_{x\\to 0} \\dfrac{-\\ln(1+78524(e^x-1))}{x}\\]`,
-                      `\\[\\lim_{x\\to \\infty} \\dfrac{-\\ln(e^x-1)}{x}\\]`,
-                      `\\[\\lim_{x\\to \\infty} \\dfrac{1}{x}\\]`,
-                      `\\[\\lim_{x\\to 0} \\dfrac{-\\ln(69)}{x}\\]`,
-                    ],
-                  },
-                  {
-                    statement: `Find a solution to the following 2nd-order differential equation: \\[\\dfrac{d^2x}{dt^2} = -\\omega^2 x\\]`,
-                    choices: [
-                      `\\[V\\cos(\\omega t + \\kappa)\\]`,
-                      `\\[Z\\cos(\\alpha t + \\kappa) +C\\]`,
-                      `\\[Z\\cos(\\alpha t + \\theta) +C\\]`,
-                      `\\[V\\cos(\\gamma t + \\kappa)\\]`,
-                    ],
-                  },
-                  {
-                    statement:
-                      "Evaluate: \\[(-35e^{\\pi i })^2 - \\left(\\lim_{x\\to 31} \\frac{x^2-9}{x-3}\\right)^2 \\]",
-                  },
-                  { statement: "ENGLISH OR SPANISH ????????????" },
-                ];
+                questions = [];
               }
+              const artConst = document.createElement("article");
+              const titleConst = document.createElement("h2");
+              const statementConst = document.createElement("span");
+              statementConst.innerText = `Earth's Gravitational Acceleration: \\( g = 9.8 \\, \\dfrac{\\text{m}}{\\text{s}^2} \\)
+                    Speed of Light: \\( c = 3 \\times 10^8 \\, \\dfrac{\\text{m}}{\\text{s}} \\)
+                    Speed of Sound at Room Temperature: \\( v_{s} = 343 \\, \\dfrac{\\text{m}}{\\text{s}} \\)
+                    Planck's Constant: \\( h = 6.626 \\times 10^{-34} \\, \\text{Js} \\)
+                    Boltzmann Constant: \\( k_{B} = 1.381 \\times 10^{-23} \\, \\dfrac{\\text{J}}{\\text{K}} \\)
+                    Gravitational Constant: \\( G = 6.674 \\times 10^{-11} \\, \\dfrac{\\text{N} \\cdot\\text{m}^2}{\\text{kg}^2} \\)
+                    Atmospheric Pressure: \\( P_{a} = 10^5 \\, \\text{Pa} \\)
+                    Elementary Charge: \\( e = 1.602 \\times 10^{-19} \\, \\text{C} \\)
+                    Electron Mass: \\( m_{e} = 9.109 \\times 10^{-31} \\, \\text{kg} \\)
+                    Proton Mass: \\( m_{p} = 1.673 \\times 10^{-27} \\, \\text{kg} \\)
+                    Coulomb's Constant: \\( k_{e} = 8.988 \\times 10^9 \\, \\dfrac{\\text{N} \\cdot \\text{m}^2}{\\text{C}^2} \\)
+                    Permeability of Free Space: \\(\\mu_{0} = 4 \\pi \\times 10^{-7} \\, \\dfrac{\\text{N}}{\\text{A}^2} \\)
+                    Permittivity of Free Space: \\(\\epsilon_{0} = 8.854 \\times 10^{-12} \\, \\dfrac{\\text{C}^2}{\\text{N}\\cdot \\text{m}^2} \\)
+                    Density of Air at Room Temperature: \\( \\rho_{a} = 1.2 \\, \\dfrac{\\text{kg}}{\\text{m}^3} \\)
+                    Radius of the Earth: \\( R = 6371 \\, \\text{km} \\)
+                    Surface Temperature of the Earth: \\( T_{e} = 290 \\, \\text{K} \\)
+                    Surface Temperature of the Sun: \\( T_{s} = 5800 \\, \\text{K} \\)
+`;
+              titleConst.innerText = `List of Constants:`;
+              artConst.append(titleConst, statementConst);
+              form.append(artConst);
+              renderMathInElement(form);
+
               for (const question of questions) {
                 const art = document.createElement("article");
                 const title = document.createElement("h2");
                 const statement = document.createElement("span");
                 statement.innerText = question.statement;
                 title.innerText = `Question ${questions.indexOf(question) + 1}`;
-                console.log(question);
                 if (question?.choices?.length) {
                   const choicesContainer = document.createElement("div");
                   for (choice of question.choices) {
@@ -426,7 +625,7 @@ if (
                   input.type = "text";
                   input.id = `Q${questions.indexOf(question) + 1}`;
                   input.name = `Q${questions.indexOf(question) + 1}`;
-                  input.setAttribute("placeholder", "Fill in this gap");
+                  input.setAttribute("placeholder", "Answer");
                   art.append(title, statement, input);
                 }
                 form.append(art);
@@ -436,9 +635,9 @@ if (
               const info = document.createElement("p");
               const issues = document.createElement("p");
               const submit = document.createElement("button");
-              info.innerHTML = `For more information about STEM October's Physics Club, please visit the <a
+              info.innerHTML = `For more information about STEM October Physics Club, please visit the <a
                       href="https://octphysicsclub.org/">club's webpage</a>.`;
-              issues.innerHTML = `In case you encounter any issues or have any inquiries, email us at <a href="mailto:octphysicsclub@gmail.com">octphysicsclub@gmail.com</a>.`;
+              issues.innerHTML = `In case you encounter any issues or have any inquiries, email us at <a href="mailto:support@iphr.octphysicsclub.org">support@iphr.octphysicsclub.org</a>.`;
               submit.type = "submit";
               submit.id = "submit";
               submit.innerText = "Submit";
@@ -452,13 +651,20 @@ if (
                 });
               setInterval(() => {
                 showAlert(currentStorage);
-                console.log("regular capture");
-                console.log(currentStorage);
               }, capDelay);
               setInterval(() => {
                 switchStorage();
               }, switchDBDelay);
-              document.querySelector(".loader").style.display = "none";
+
+              if (data?.timeOpened) {
+                localStorage.setItem("timeOpened", data.timeOpened);
+              } else {
+                await dataFirestore.update({ timeOpened: Date.now() + 1000 });
+                localStorage.setItem("timeOpened", Date.now() + 1000);
+              }
+              setTimeout(() => {
+                document.querySelector(".loader").style.display = "none";
+              }, 400);
             }
             main();
 
@@ -528,7 +734,6 @@ if (
                       async () => {
                         const downloadURL =
                           await uploadTask.snapshot.ref.getDownloadURL();
-                        console.log("File available at", downloadURL);
                         resolve(downloadURL);
                       }
                     );
@@ -579,9 +784,6 @@ if (
               }
             }
             window.addEventListener("blur", () => {
-              console.log(
-                "User opened another window or switched to another application."
-              );
               showAlert("Please stay on the page.");
             });
           } else {
@@ -598,7 +800,7 @@ if (
       }
     })();
   } else {
-    console.log("getUserMedia() is not supported by your browser");
+    alert("getUserMedia() is not supported by your browser");
   }
 } else {
   location.href = domain;
